@@ -29,11 +29,25 @@ The bottom right button selects the page to display. The page number is represen
 
 ### Display (white):
 
-In this page, all the melodies are simultaneously displayed. The colours of each instrument are ORed together (as RGB), so if a blue instrument and a red instrument plays the same note at the same time, the button is purple.
+In this page, all the melodies are simultaneously displayed. The colours of each instrument are summed together (as RGB), so if a blue instrument and a red instrument plays the same note at the same time, the button is purple.
 
 One can also play an instrument by pressing the buttons. The channel that is being played is selected by the second to right column using the binary format.
 
 ### Edit Time (red):
+
+The green buttons in the 2nd column sets the number of beats per bar in binary format. The next 2 columns of blue buttons sets the bpm as an 8 bit binary number. The purple pinkish buttons in the 5th column set the beat subdivisions (whether it plays crotchets, quavers, etc). The red buttons in the 6th column set the number of bars.
+
+The button in the 6th column 4th row randomizes the sequence of the bars when engaged (yellow). That means each time a bar ends, a new one is picked at random.
+
+The 7th column sets the variation in time between beats.
+
 ### Edit Melody (orange):
+
+The 7th column is used to select the midi channel. The remaining buttons are used to input the melody.
+
+TODO: explain details
+
 ### Edit Instrument 1 (yellow):
+
+The 2nd column sets the maximum velocity and the 3rd sets the minimum velocity.
 ### Edit Instrument 2 (green):
