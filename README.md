@@ -82,7 +82,9 @@ The 7th column selects the intsrument to edit, the same as the 7th column in the
 
 ### Edit Instrument 2 (green):
 
-The 2nd and 3rd columns set the bar repetition structure. The colour of each button sets which bar to play, and the location sets when to play in. For example, if every button is white, the current instrument would continuously play the firt bar. This is useful for having a repetitive drumbeat without having to write it for all 8 bars.
+The 2nd and 3rd columns set the bar repetition structure. The colour of each button sets which bar to play, and the location sets when to play it. For example, if every button is white, the current instrument would continuously play the firt bar. This is useful for having a repetitive drumbeat without having to manually program it for all 8 bars.
+
+Changing the colours in this _bar repetition structure_ section is kind of counter intuitive, but once you get it you can put in patterns very fast. First press and hold the button that represents the bar number you want to set the other buttons to. Then press all the buttons you want to set to that bar number while still holding down the first button.
 
 The 4th and 5th columns overwite the notes in the current instrument with something else. Starting from top left going to bottom right, these "something else's" are:
 
