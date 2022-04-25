@@ -88,12 +88,12 @@
 
 // ISTRUMENT BUTTONS 2
 #define BAR_COPY_0        1
-#define BAR_COPY_1        9
-#define BAR_COPY_2        17
-#define BAR_COPY_3        25
-#define BAR_COPY_4        2
-#define BAR_COPY_5        10
-#define BAR_COPY_6        18
+#define BAR_COPY_1        2
+#define BAR_COPY_2        9
+#define BAR_COPY_3        10
+#define BAR_COPY_4        17
+#define BAR_COPY_5        18
+#define BAR_COPY_6        25
 #define BAR_COPY_7        26
 #define INS_COPY_0        5
 #define INS_COPY_1        13
@@ -160,6 +160,7 @@ page page_select = show_all;
 
 // Melody & instrument stuff
 instruments ins[NUM_INS];
+int bar_to_copy = -1;
 uint8_t instrument_selector = 0;
 uint8_t ins_copy = 0;
 const int frets[12] = {0, 2, 3, 5, 7, 8, 10, 12, 14, 15, 17, 19};
@@ -323,10 +324,33 @@ void display() {
   }
 }
 
+void update_bar_to_copy() {
+  if (bar_to_copy == -1) {
+    if(trellis.isPressed(BAR_COPY_0)) bar_to_copy = 0;
+    else if (trellis.isPressed(BAR_COPY_1)) bar_to_copy = 1;
+    else if (trellis.isPressed(BAR_COPY_2)) bar_to_copy = 2;
+    else if (trellis.isPressed(BAR_COPY_3)) bar_to_copy = 3;
+    else if (trellis.isPressed(BAR_COPY_4)) bar_to_copy = 4;
+    else if (trellis.isPressed(BAR_COPY_5)) bar_to_copy = 5;
+    else if (trellis.isPressed(BAR_COPY_6)) bar_to_copy = 6;
+    else if (trellis.isPressed(BAR_COPY_7)) bar_to_copy = 7;
+  }
+  else {
+    if(!trellis.isPressed(bar_copy_buttons[bar_to_copy])){
+      bar_to_copy = -1;
+    }
+  }
+}
+
 void setup() {
   trellis.begin();
   trellis.setBrightness(80);
   trellis.enableUSBMIDI(true);
+  for (int i = 0; i < NUM_INS; i++)
+  {
+    ins[i].color_picker = i%6;
+  }
+  
   display();
 }
 
@@ -582,36 +606,44 @@ void loop() {
             break;
 
           case BAR_COPY_0:
-            ins[instrument_selector].bar_copy[0]++;
-            ins[instrument_selector].bar_copy[0] &= 7;
+            update_bar_to_copy();
+            if (bar_to_copy != -1)
+              ins[instrument_selector].bar_copy[0] = bar_to_copy;
             break;
           case BAR_COPY_1:
-            ins[instrument_selector].bar_copy[1]++;
-            ins[instrument_selector].bar_copy[1] &= 7;
+            update_bar_to_copy();
+            if (bar_to_copy != -1)
+              ins[instrument_selector].bar_copy[1] = bar_to_copy;
             break;
           case BAR_COPY_2:
-            ins[instrument_selector].bar_copy[2]++;
-            ins[instrument_selector].bar_copy[2] &= 7;
+            update_bar_to_copy();
+            if (bar_to_copy != -1)
+              ins[instrument_selector].bar_copy[2] = bar_to_copy;
             break;
           case BAR_COPY_3:
-            ins[instrument_selector].bar_copy[3]++;
-            ins[instrument_selector].bar_copy[3] &= 7;
+            update_bar_to_copy();
+            if (bar_to_copy != -1)
+              ins[instrument_selector].bar_copy[3] = bar_to_copy;
             break;
           case BAR_COPY_4:
-            ins[instrument_selector].bar_copy[4]++;
-            ins[instrument_selector].bar_copy[4] &= 7;
+            update_bar_to_copy();
+            if (bar_to_copy != -1)
+              ins[instrument_selector].bar_copy[4] = bar_to_copy;
             break;
           case BAR_COPY_5:
-            ins[instrument_selector].bar_copy[5]++;
-            ins[instrument_selector].bar_copy[5] &= 7;
+            update_bar_to_copy();
+            if (bar_to_copy != -1)
+              ins[instrument_selector].bar_copy[5] = bar_to_copy;
             break;
           case BAR_COPY_6:
-            ins[instrument_selector].bar_copy[6]++;
-            ins[instrument_selector].bar_copy[6] &= 7;
+            update_bar_to_copy();
+            if (bar_to_copy != -1)
+              ins[instrument_selector].bar_copy[6] = bar_to_copy;
             break;
           case BAR_COPY_7:
-            ins[instrument_selector].bar_copy[7]++;
-            ins[instrument_selector].bar_copy[7] &= 7;
+            update_bar_to_copy();
+            if (bar_to_copy != -1)
+              ins[instrument_selector].bar_copy[7] = bar_to_copy;
             break;
 
           case PRESET_ROOT_BAR:
@@ -886,6 +918,15 @@ void loop() {
 
           default:
             break;
+        }
+      }
+
+      if (page_select == edit_instrument2) {
+        for (int i = 0; i < MAX_BARS; i++) {
+          if(butt == bar_copy_buttons[i]) {
+            bar_to_copy = -1;
+            update_bar_to_copy();
+          }
         }
       }
     }
