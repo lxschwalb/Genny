@@ -9,8 +9,20 @@ instruments::~instruments()
 }
 
 void instruments::setTimePoint(uint8_t bar_num, uint8_t beat_num) {
-  _bar_num = bar_num;
-  _beat_num = beat_num;
+  if (free_running)
+  {
+    _beat_num++;
+    _beat_num %= num_beats+1;
+    if (_beat_num == 0)
+    {
+      _bar_num = bar_num;
+    }
+  }
+  else
+  {
+    _beat_num = beat_num % (num_beats + 1);
+    _bar_num = bar_num;
+  }
 }
 
 int instruments::findMelodyEditColor(int note) {

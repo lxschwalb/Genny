@@ -46,6 +46,9 @@ public:
     uint32_t note_on[16][8];
     uint32_t note_off[16][8];
 
+    uint8_t num_beats = 15;
+    bool free_running = false;
+    uint8_t rand_time = 0;      //TODO
     uint8_t bar_copy[8] = {0, 1, 2, 3, 4, 5, 6, 7};
     uint8_t max_vel = 127;
     uint8_t min_vel = 0;
