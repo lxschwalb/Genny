@@ -34,7 +34,7 @@ int instruments::findMelodyEditColor(int note) {
   }
   if (note_off[_beat_num][bar_alias] & 1<<note)
   {
-    return 0xFFFFFF;
+    return 0;
   }
   if (white_notes[note])
   {

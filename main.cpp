@@ -197,26 +197,36 @@ int buttonColor(bool button_status, int button_color) {
   return 0x000000;
 }
 
+void setPixelColor(uint32_t p, uint32_t c) {
+  static uint32_t prev_c[32];
+
+  if(prev_c[p] != c)
+  {
+    trellis.setPixelColor(p, c);
+    prev_c[p] = c;
+  }
+}
+
 void display() {
   for (int i = 0; i < 4; i++)
   {
     if (beat_num & (8>>i))
     {
-      trellis.setPixelColor(i<<3, 0xFFFFFF);
+      setPixelColor(i<<3, 0xFFFFFF);
     }
     else
     {
-      trellis.setPixelColor(i<<3, 0x000000);
+      setPixelColor(i<<3, 0x000000);
     }
-    trellis.setPixelColor(ins_sel_buttons[i], buttonColor(instrument_selector & (8>>i), 0x2F00FF));
+    setPixelColor(ins_sel_buttons[i], buttonColor(instrument_selector & (8>>i), 0x2F00FF));
   }
 
-  if(play) trellis.setPixelColor(PLAY, 0x00FF00);
-  else trellis.setPixelColor(PLAY, 0xFF0000);
+  if(play) setPixelColor(PLAY, 0x00FF00);
+  else setPixelColor(PLAY, 0xFF0000);
 
-  trellis.setPixelColor(BUMP_BEAT, counter_color[bar_num]);
-  trellis.setPixelColor(BUMP_BAR, counter_color[bar_num]);
-  trellis.setPixelColor(PAGE_SEL, counter_color[page_select]);
+  setPixelColor(BUMP_BEAT, counter_color[bar_num]);
+  setPixelColor(BUMP_BAR, counter_color[bar_num]);
+  setPixelColor(PAGE_SEL, counter_color[page_select]);
 
   int canvas[NUM_NOTES] = {0};
   switch (page_select)
@@ -228,7 +238,7 @@ void display() {
         {
           canvas[i] |= ins[j].showNote(i);
         }
-        trellis.setPixelColor(note_buttons[i], canvas[i]);
+        setPixelColor(note_buttons[i], canvas[i]);
       }
       
       break;
@@ -236,7 +246,7 @@ void display() {
     case edit_melody: // EDIT MELODY
       for (int i = 0; i < NUM_NOTES; i++)
       {
-        trellis.setPixelColor(note_buttons[i], ins[instrument_selector].findMelodyEditColor(i));
+        setPixelColor(note_buttons[i], ins[instrument_selector].findMelodyEditColor(i));
       }
       
       break;
@@ -244,75 +254,75 @@ void display() {
     case edit_instrument1: // EDIT INSTRUMENT 1
       for (int i = 0; i < 4; i++)
       {
-        trellis.setPixelColor(max_vel_buttons[i], buttonColor(ins[instrument_selector].max_vel & (64>>i), 0xFF3500));
-        trellis.setPixelColor(min_vel_buttons[i], buttonColor(ins[instrument_selector].min_vel & (64>>i), 0xFF8800));
+        setPixelColor(max_vel_buttons[i], buttonColor(ins[instrument_selector].max_vel & (64>>i), 0xFF3500));
+        setPixelColor(min_vel_buttons[i], buttonColor(ins[instrument_selector].min_vel & (64>>i), 0xFF8800));
       }
       for (int i = 0; i < 3; i++)
       {
-        trellis.setPixelColor(octave_buttons[i], buttonColor(ins[instrument_selector].octave & (4>>i), 0x00FFFF));
-        trellis.setPixelColor(vel_param_buttons[i], buttonColor(ins[instrument_selector].vel_param & (4>>i), 0x00FF00));
+        setPixelColor(octave_buttons[i], buttonColor(ins[instrument_selector].octave & (4>>i), 0x00FFFF));
+        setPixelColor(vel_param_buttons[i], buttonColor(ins[instrument_selector].vel_param & (4>>i), 0x00FF00));
       }
-      trellis.setPixelColor(PROB, ins[instrument_selector].probColor());
-      trellis.setPixelColor(VEL_MODE, ins[instrument_selector].velModeColor());
-      trellis.setPixelColor(RANDOM_BEAT, buttonColor(ins[instrument_selector].random_beat, 0xFFFF00));
-      trellis.setPixelColor(BLACK_KEYS, buttonColor(ins[instrument_selector].black_keys, 0xFFFFFF));
-      trellis.setPixelColor(PANIC, 0xFF0000);
-      trellis.setPixelColor(INSTRUMENT_COLOR, ins[instrument_selector].color());
+      setPixelColor(PROB, ins[instrument_selector].probColor());
+      setPixelColor(VEL_MODE, ins[instrument_selector].velModeColor());
+      setPixelColor(RANDOM_BEAT, buttonColor(ins[instrument_selector].random_beat, 0xFFFF00));
+      setPixelColor(BLACK_KEYS, buttonColor(ins[instrument_selector].black_keys, 0xFFFFFF));
+      setPixelColor(PANIC, 0xFF0000);
+      setPixelColor(INSTRUMENT_COLOR, ins[instrument_selector].color());
       break;
 
     case edit_instrument2: // EDIT INSTRUMENT 2
       for (int i = 0; i < 8; i++)
       {
-        trellis.setPixelColor(bar_copy_buttons[i], counter_color[ins[instrument_selector].bar_copy[i]]);
+        setPixelColor(bar_copy_buttons[i], counter_color[ins[instrument_selector].bar_copy[i]]);
       }
       for (int i = 0; i < 4; i++)
       {
-        trellis.setPixelColor(ins_copy_buttons[i], buttonColor(ins_copy & (8>>i), 0xFF008F));
+        setPixelColor(ins_copy_buttons[i], buttonColor(ins_copy & (8>>i), 0xFF008F));
       }
-      trellis.setPixelColor(PRESET_ROOT_BAR, 0xFF0000);
-      trellis.setPixelColor(PRESET_ROOT_BEAT, 0xFF0000);
-      trellis.setPixelColor(PRESET_CHORD_BAR, 0xFF0000);
-      trellis.setPixelColor(PRESET_CHORD_BEAT, 0xFF0000);
-      trellis.setPixelColor(PRESET_ARPEG, 0xFF0000);
-      trellis.setPixelColor(PRESET_RAND, 0xFF0000);
-      trellis.setPixelColor(PRESET_CLEAR, 0xFF0000);
-      trellis.setPixelColor(PRESET_COPY, 0xFF0000);
+      setPixelColor(PRESET_ROOT_BAR, 0xFF0000);
+      setPixelColor(PRESET_ROOT_BEAT, 0xFF0000);
+      setPixelColor(PRESET_CHORD_BAR, 0xFF0000);
+      setPixelColor(PRESET_CHORD_BEAT, 0xFF0000);
+      setPixelColor(PRESET_ARPEG, 0xFF0000);
+      setPixelColor(PRESET_RAND, 0xFF0000);
+      setPixelColor(PRESET_CLEAR, 0xFF0000);
+      setPixelColor(PRESET_COPY, 0xFF0000);
       break;
 
     case edit_time: // EDIT TIME
       for (int i = 0; i < 4; i++)
       {
-        trellis.setPixelColor(bar_len_buttons[i], buttonColor(num_beats & (8>>i), 0x00FF00));
-        trellis.setPixelColor(local_bar_len_buttons[i], buttonColor(ins[instrument_selector].num_beats & (8>>i), 0x00FF00));
+        setPixelColor(bar_len_buttons[i], buttonColor(num_beats & (8>>i), 0x00FF00));
+        setPixelColor(local_bar_len_buttons[i], buttonColor(ins[instrument_selector].num_beats & (8>>i), 0x00FF00));
       }
       for (int i = 0; i < 3; i++)
       {
-        trellis.setPixelColor(num_bar_buttons[i], buttonColor(num_bars & (4>>i), 0xFF0000));
-        trellis.setPixelColor(rand_time_buttons[i], buttonColor(ins[instrument_selector].rand_time & (4>>i), 0xFF0000));
+        setPixelColor(num_bar_buttons[i], buttonColor(num_bars & (4>>i), 0xFF0000));
+        setPixelColor(rand_time_buttons[i], buttonColor(ins[instrument_selector].rand_time & (4>>i), 0xFF0000));
       }
       switch (clock_sync)
       {
       case 0:
-        trellis.setPixelColor(CLOCK_SYNC, 0xFF0000);
+        setPixelColor(CLOCK_SYNC, 0xFF0000);
         break;
 
       case 1:
-        trellis.setPixelColor(CLOCK_SYNC, 0x00FF00);
+        setPixelColor(CLOCK_SYNC, 0x00FF00);
         break;
 
       case 2:
-        trellis.setPixelColor(CLOCK_SYNC, 0xFFFF00);
+        setPixelColor(CLOCK_SYNC, 0xFFFF00);
         break;
       
       default:
         break;
       }
 
-      trellis.setPixelColor(TODO_1, buttonColor(todo_1, 0xFF4F00));
-      trellis.setPixelColor(TODO_2, buttonColor(todo_2, 0xFF8000));
-      trellis.setPixelColor(RAND_BAR, buttonColor(rand_bar, 0xFFFF00));
-      trellis.setPixelColor(TAP_TEMPO, buttonColor(tap_timer==0, 0xFF4F00));
-      trellis.setPixelColor(FREE_RUNNING, buttonColor(ins[instrument_selector].free_running, 0xFF4F00));
+      setPixelColor(TODO_1, buttonColor(todo_1, 0xFF4F00));
+      setPixelColor(TODO_2, buttonColor(todo_2, 0xFF8000));
+      setPixelColor(RAND_BAR, buttonColor(rand_bar, 0xFFFF00));
+      setPixelColor(TAP_TEMPO, buttonColor(tap_timer==0, 0xFF4F00));
+      setPixelColor(FREE_RUNNING, buttonColor(ins[instrument_selector].free_running, 0xFF4F00));
       break;
     
     default:
@@ -352,6 +362,7 @@ void setup() {
 
 void loop() {
   trellis.tick();
+  display();
 
   while (trellis.available())
   {
@@ -620,10 +631,10 @@ void loop() {
           case PRESET_ROOT_BEAT:
             for (int i = 0; i < MAX_BARS; i++)
             {
+              ins[instrument_selector].note_off[0][i] = ~(1<<frets[i]);
               for (int j = 0; j < MAX_BEATS; j++)
               {
                 ins[instrument_selector].note_on[j][i] = 1<<frets[i];
-                ins[instrument_selector].note_off[j][i] = ~(1<<frets[i]);
               }
             }
             break;
@@ -645,10 +656,10 @@ void loop() {
               uint32_t root = 1<<frets[i];
               uint32_t third = i < 6 ? 1<<frets[i+2] : 1<<frets[i-5];
               uint32_t fifth = i < 4 ? 1<<frets[i+4] : 1<<frets[i-3];
+              ins[instrument_selector].note_off[0][i] = ~(root | third | fifth);
               for (int j = 0; j < MAX_BEATS; j++)
               {
                 ins[instrument_selector].note_on[j][i] = root | third | fifth;
-                ins[instrument_selector].note_off[j][i] = ~(root | third | fifth);
               }
             }
             break;
@@ -661,7 +672,7 @@ void loop() {
                 int note = 1<<frets[i + (j%3)*2];
 
                 ins[instrument_selector].note_on[j][i] = note;
-                ins[instrument_selector].note_off[j][i] = ~(note);
+                ins[instrument_selector].note_off[j][i] = ~(note); // TODO: possible optimization here
               }
             }
             break;
@@ -673,7 +684,7 @@ void loop() {
               {
                 int note = random(NUM_NOTES);
                 ins[instrument_selector].note_on[j][i] = 1<<note;
-                ins[instrument_selector].note_off[j][i] = ~(1<<note);
+                ins[instrument_selector].note_off[j][i] = ~(1<<note); // TODO: possible optimization here
               }
             }
             break;
@@ -887,8 +898,6 @@ void loop() {
       }
       
     }
-    
-    display();
   }
   
   midiEventPacket_t midi_read = MidiUSB.read();
@@ -904,7 +913,6 @@ void loop() {
     {
       clock_counter = 0;
       takeStep();
-      display();
     }
   }
 
