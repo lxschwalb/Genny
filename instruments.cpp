@@ -8,6 +8,11 @@ instruments::~instruments()
 {
 }
 
+void instruments::begin(Adafruit_NeoTrellisM4 *trellis)
+{
+  _trellis = trellis;
+}
+
 void instruments::setTimePoint(uint8_t bar_num, uint8_t beat_num) {
   if (free_running)
   {
@@ -51,7 +56,44 @@ int instruments::showNote(int note) {
   return 0x000000;
 }
 
-void instruments::send_midi(Adafruit_NeoTrellisM4 *trellis) {
+void instruments::setNoteTimes(unsigned long last_beat, unsigned long beat_len) {
+  int bar_alias = bar_copy[_bar_num];
+  int beat_alias = random_beat ? random(16) : _beat_num;
+  if (random(1, 5) <= prob)
+  {
+    long variation = (beat_len>>4)*rand_time;
+    for(int i = 0; i < 20; i++) {
+      long offset = random(-variation, variation);
+      if(note_on[beat_alias][bar_alias] & (1<<i)) {
+        note_on_times[i] = last_beat + (beat_len>>1) + offset;
+      }
+      else {
+        note_on_times[i] = 0xFFFFFFFF;
+      }
+
+      if(note_off[beat_alias][bar_alias] & (1<<i)) {
+        if (note_on_times[i] != 0xFFFFFFFF) {
+          unsigned long margin = beat_len>>5;
+          note_off_times[i] = random(note_on_times[i]+margin, last_beat+beat_len-margin);
+        }
+        else {
+          note_off_times[i] = last_beat + (beat_len>>1) + offset;
+        }
+      }
+      else {
+        note_off_times[i] = 0xFFFFFFFF;
+      }
+    }
+  }
+  else {
+    for(int i = 0; i < 20; i++) {
+      note_on_times[i] = -1;
+      note_off_times[i] = -1;
+    }
+  }
+}
+
+void instruments::setVel() {
   switch (vel_mode)
   {
   case rand_uni:
@@ -69,95 +111,56 @@ void instruments::send_midi(Adafruit_NeoTrellisM4 *trellis) {
     break;
 
   case ascending:
-    vel = min_vel + ((max_vel - min_vel)>>4)*_beat_num;
+    vel = min_vel + ((max_vel - min_vel)>>4)*_beat_num; // TODO improve this
     break;
 
   case descending:
-    vel = max_vel - ((max_vel - min_vel)>>4)*_beat_num;
+    vel = max_vel - ((max_vel - min_vel)>>4)*_beat_num; // TODO improve this
     break;
   
   default:
     break;
   }
   vel_prev = vel;
+}
 
-  if (random(1, 5) <= prob)
+void instruments::playback() {
+  unsigned long t = micros();
+  for(int i = 0; i < 20; i++)
   {
-    int bar_alias = bar_copy[_bar_num];
-    int beat_alias = random_beat ? random(16) : _beat_num;
-
-    for (int i = 0; i < 20; i++)
+    if (t >= note_on_times[i])
     {
-      if (note_on[beat_alias][bar_alias] & 1 << i)
-      {
-        noteOn(i, vel, trellis);
-      }
-      else if (note_off[beat_alias][bar_alias] & 1 << i)
-      {
-        noteOff(i, vel, trellis);
-      }
+      noteOn(i, vel);
+      note_on_times[i] = 0xFFFFFFFF;
     }
+    if (t >= note_off_times[i])
+    {
+      noteOff(i, vel);
+      note_off_times[i] = 0xFFFFFFFF;
+    }   
   }
 }
 
-void instruments::noteOn(int note, int velocity, Adafruit_NeoTrellisM4 *trellis, bool toggle, bool next_beat) {
+void instruments::noteOn(int note, int velocity, bool write) {
   int real_note = black_keys ? 9+12*octave + note : 9+12*octave + tonal_map[note];
-  trellis->noteOn(real_note, velocity);
+  _trellis->noteOn(real_note, velocity);
   is_note_playing |= 1 << note;
 
-  if (toggle)
+  if (write)
   {
-    int bar_alias;
-    int beat_alias;
-    beat_alias = next_beat ? _beat_num + 1 : _beat_num;
-    if(beat_alias & 0x10)
-    {
-      beat_alias &= 0xF;
-      bar_alias = bar_copy[(_bar_num + 1) & 0x7];
-    }
-    else
-    {
-      bar_alias = bar_copy[_bar_num];
-    }
-    
-    toggle_flag |= note_on[beat_alias][bar_alias] & (1<<note);
-    note_on[beat_alias][bar_alias] |= 1<<note;
-    note_off[beat_alias][bar_alias] &= ~(1<<note);
+    note_on[_beat_num][bar_copy[_bar_num]] ^= 1<<note;
   }
-  
 }
 
-void instruments::noteOff(int note, int velocity, Adafruit_NeoTrellisM4 *trellis, bool toggle, bool next_beat) {
+void instruments::noteOff(int note, int velocity, bool write) {
   int real_note = black_keys ? 9+12*octave + note : 9+12*octave + tonal_map[note];
 
-  trellis->noteOff(real_note, velocity);
+  _trellis->noteOff(real_note, velocity);
   is_note_playing &= ~(1 << note);
 
-  if (toggle)
+  if (write)
   {
-    int bar_alias;
-    int beat_alias;
-    beat_alias = next_beat ? _beat_num + 1 : _beat_num;
-    if(beat_alias & 0x10)
-    {
-      beat_alias &= 0xF;
-      bar_alias = bar_copy[(_bar_num + 1) & 0x7];
-    }
-    else
-    {
-      bar_alias = bar_copy[_bar_num];
-    }
-
-    if (!(note_on[beat_alias][bar_alias] & (1 << note)))
-    {
-      note_off[beat_alias][bar_alias] |= 1<<note;
-    }
-    else if (toggle_flag & (1<<note))
-    {
-      note_on[beat_alias][bar_alias] &= ~(1<<note);
-      note_off[beat_alias][bar_alias] &= ~(1<<note);
-      toggle_flag &= ~(1<<note);
-    }
+    note_off[_beat_num][bar_copy[_bar_num]] ^= 1<<note;
   }
 }
 

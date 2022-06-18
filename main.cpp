@@ -128,7 +128,7 @@ const uint8_t rand_time_buttons[3] = {RAND_TIME_0, RAND_TIME_1, RAND_TIME_2};
 Adafruit_NeoTrellisM4 trellis;
 
 // Time stuff
-const int counter_color[8] = {0xFFFFFF, 0xFF0000, 0xFF3F00, 0xFFA500, 0x00FF00, 0x00FFC5, 0x0000FF, 0x8800FF};
+const int counter_color[8] = {0xFFFFFF, 0xFF0000, 0xFF5F00, 0xFFFF00, 0x008000, 0x0000FF, 0x3000F2, 0xAE4EEE};
 uint8_t num_bars = MAX_BARS-1;       //One less than actual number for efficient binary implementation
 uint8_t bar_num = 0;
 uint8_t num_beats = MAX_BEATS-1;     //One less than actual number for efficient binary implementation
@@ -137,7 +137,7 @@ uint8_t clock_sync = 0;
 bool todo_1 = false;
 bool todo_2 = false;
 bool rand_bar = false;
-int beat_len = 125000;  // Corresponds to 120 bpm 16th notes
+unsigned long beat_len = 125000;  // Corresponds to 120 bpm 16th notes
 unsigned long last_beat = micros();
 unsigned long tap_timer = 0;
 unsigned long clk_timer = 0;
@@ -180,16 +180,15 @@ void takeStep() {
       bar_num %= num_bars + 1;
     }
   }
-  
   for (int i = 0; i < NUM_INS; i++)
   {
-    trellis.setUSBMIDIchannel(i);
     ins[i].setTimePoint(bar_num, beat_num);
-    ins[i].send_midi(&trellis);
+    ins[i].setNoteTimes(last_beat, beat_len);
+    ins[i].setVel();
   }
 }
 
-int buttonColor(bool button_status, int button_color) {
+int conditionalColor(bool button_status, int button_color) {
   if (button_status)
   {
     return button_color;
@@ -218,7 +217,7 @@ void display() {
     {
       setPixelColor(i<<3, 0x000000);
     }
-    setPixelColor(ins_sel_buttons[i], buttonColor(instrument_selector & (8>>i), 0x2F00FF));
+    setPixelColor(ins_sel_buttons[i], conditionalColor(instrument_selector & (8>>i), 0x2F00FF));
   }
 
   if(play) setPixelColor(PLAY, 0x00FF00);
@@ -254,18 +253,18 @@ void display() {
     case edit_instrument1: // EDIT INSTRUMENT 1
       for (int i = 0; i < 4; i++)
       {
-        setPixelColor(max_vel_buttons[i], buttonColor(ins[instrument_selector].max_vel & (64>>i), 0xFF3500));
-        setPixelColor(min_vel_buttons[i], buttonColor(ins[instrument_selector].min_vel & (64>>i), 0xFF8800));
+        setPixelColor(max_vel_buttons[i], conditionalColor(ins[instrument_selector].max_vel & (64>>i), 0xFF3500));
+        setPixelColor(min_vel_buttons[i], conditionalColor(ins[instrument_selector].min_vel & (64>>i), 0xFF8800));
       }
       for (int i = 0; i < 3; i++)
       {
-        setPixelColor(octave_buttons[i], buttonColor(ins[instrument_selector].octave & (4>>i), 0x00FFFF));
-        setPixelColor(vel_param_buttons[i], buttonColor(ins[instrument_selector].vel_param & (4>>i), 0x00FF00));
+        setPixelColor(octave_buttons[i], conditionalColor(ins[instrument_selector].octave & (4>>i), 0x00FFFF));
+        setPixelColor(vel_param_buttons[i], conditionalColor(ins[instrument_selector].vel_param & (4>>i), 0x00FF00));
       }
       setPixelColor(PROB, ins[instrument_selector].probColor());
       setPixelColor(VEL_MODE, ins[instrument_selector].velModeColor());
-      setPixelColor(RANDOM_BEAT, buttonColor(ins[instrument_selector].random_beat, 0xFFFF00));
-      setPixelColor(BLACK_KEYS, buttonColor(ins[instrument_selector].black_keys, 0xFFFFFF));
+      setPixelColor(RANDOM_BEAT, conditionalColor(ins[instrument_selector].random_beat, 0xFFFF00));
+      setPixelColor(BLACK_KEYS, conditionalColor(ins[instrument_selector].black_keys, 0xFFFFFF));
       setPixelColor(PANIC, 0xFF0000);
       setPixelColor(INSTRUMENT_COLOR, ins[instrument_selector].color());
       break;
@@ -277,7 +276,7 @@ void display() {
       }
       for (int i = 0; i < 4; i++)
       {
-        setPixelColor(ins_copy_buttons[i], buttonColor(ins_copy & (8>>i), 0xFF008F));
+        setPixelColor(ins_copy_buttons[i], conditionalColor(ins_copy & (8>>i), 0xFF008F));
       }
       setPixelColor(PRESET_ROOT_BAR, 0xFF0000);
       setPixelColor(PRESET_ROOT_BEAT, 0xFF0000);
@@ -292,13 +291,13 @@ void display() {
     case edit_time: // EDIT TIME
       for (int i = 0; i < 4; i++)
       {
-        setPixelColor(bar_len_buttons[i], buttonColor(num_beats & (8>>i), 0x00FF00));
-        setPixelColor(local_bar_len_buttons[i], buttonColor(ins[instrument_selector].num_beats & (8>>i), 0x00FF00));
+        setPixelColor(bar_len_buttons[i], conditionalColor(num_beats & (8>>i), 0x00FF00));
+        setPixelColor(local_bar_len_buttons[i], conditionalColor(ins[instrument_selector].num_beats & (8>>i), 0x00FF00));
       }
       for (int i = 0; i < 3; i++)
       {
-        setPixelColor(num_bar_buttons[i], buttonColor(num_bars & (4>>i), 0xFF0000));
-        setPixelColor(rand_time_buttons[i], buttonColor(ins[instrument_selector].rand_time & (4>>i), 0xFF0000));
+        setPixelColor(num_bar_buttons[i], conditionalColor(num_bars & (4>>i), 0xFF0000));
+        setPixelColor(rand_time_buttons[i], conditionalColor(ins[instrument_selector].rand_time & (4>>i), 0xFF0000));
       }
       switch (clock_sync)
       {
@@ -318,11 +317,11 @@ void display() {
         break;
       }
 
-      setPixelColor(TODO_1, buttonColor(todo_1, 0xFF4F00));
-      setPixelColor(TODO_2, buttonColor(todo_2, 0xFF8000));
-      setPixelColor(RAND_BAR, buttonColor(rand_bar, 0xFFFF00));
-      setPixelColor(TAP_TEMPO, buttonColor(tap_timer==0, 0xFF4F00));
-      setPixelColor(FREE_RUNNING, buttonColor(ins[instrument_selector].free_running, 0xFF4F00));
+      setPixelColor(TODO_1, conditionalColor(todo_1, 0xFF4F00));
+      setPixelColor(TODO_2, conditionalColor(todo_2, 0xFF8000));
+      setPixelColor(RAND_BAR, conditionalColor(rand_bar, 0xFFFF00));
+      setPixelColor(TAP_TEMPO, conditionalColor(tap_timer==0, 0xFF4F00));
+      setPixelColor(FREE_RUNNING, conditionalColor(ins[instrument_selector].free_running, 0xFF4F00));
       break;
     
     default:
@@ -349,11 +348,13 @@ void update_bar_to_copy() {
 }
 
 void setup() {
+  Serial.begin(9600);
   trellis.begin();
   trellis.setBrightness(80);
   trellis.enableUSBMIDI(true);
   for (int i = 0; i < NUM_INS; i++)
   {
+    ins[i].begin(&trellis);
     ins[i].color_picker = i%6;
   }
   
@@ -372,10 +373,8 @@ void loop() {
 
     if (e.bit.EVENT == KEY_JUST_PRESSED)
     {
-      bool next_beat = play && (micros() >= (last_beat+(beat_len>>1)));
-
       switch (butt)
-      {
+      {        
         case BEAT_NUM_0:
           beat_num ^= 1 << 3;
           break;
@@ -425,69 +424,71 @@ void loop() {
 
       switch (page_select)
       {
-      case show_all:
       case edit_melody:
+        ins[instrument_selector].setTimePoint(bar_num, beat_num);
+        // It is intentional that there is no break statement here
+      case show_all:
         switch (butt)
         {
           case NOTE_0:
-            ins[instrument_selector].noteOn(0, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(0, 80, (page_select == edit_melody));
             break;
           case NOTE_1:
-            ins[instrument_selector].noteOn(1, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(1, 80, (page_select == edit_melody));
             break;
           case NOTE_2:
-            ins[instrument_selector].noteOn(2, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(2, 80, (page_select == edit_melody));
             break;
           case NOTE_3:
-            ins[instrument_selector].noteOn(3, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(3, 80, (page_select == edit_melody));
             break;
           case NOTE_4:
-            ins[instrument_selector].noteOn(4, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(4, 80, (page_select == edit_melody));
             break;
           case NOTE_5:
-            ins[instrument_selector].noteOn(5, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(5, 80, (page_select == edit_melody));
             break;
           case NOTE_6:
-            ins[instrument_selector].noteOn(6, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(6, 80, (page_select == edit_melody));
             break;
           case NOTE_7:
-            ins[instrument_selector].noteOn(7, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(7, 80, (page_select == edit_melody));
             break;
           case NOTE_8:
-            ins[instrument_selector].noteOn(8, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(8, 80, (page_select == edit_melody));
             break;
           case NOTE_9:
-            ins[instrument_selector].noteOn(9, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(9, 80, (page_select == edit_melody));
             break;
           case NOTE_10:
-            ins[instrument_selector].noteOn(10, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(10, 80, (page_select == edit_melody));
             break;
           case NOTE_11:
-            ins[instrument_selector].noteOn(11, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(11, 80, (page_select == edit_melody));
             break;
           case NOTE_12:
-            ins[instrument_selector].noteOn(12, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(12, 80, (page_select == edit_melody));
             break;
           case NOTE_13:
-            ins[instrument_selector].noteOn(13, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(13, 80, (page_select == edit_melody));
             break;
           case NOTE_14:
-            ins[instrument_selector].noteOn(14, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(14, 80, (page_select == edit_melody));
             break;
           case NOTE_15:
-            ins[instrument_selector].noteOn(15, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(15, 80, (page_select == edit_melody));
             break;
           case NOTE_16:
-            ins[instrument_selector].noteOn(16, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(16, 80, (page_select == edit_melody));
             break;
           case NOTE_17:
-            ins[instrument_selector].noteOn(17, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(17, 80, (page_select == edit_melody));
             break;
           case NOTE_18:
-            ins[instrument_selector].noteOn(18, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(18, 80, (page_select == edit_melody));
             break;
           case NOTE_19:
-            ins[instrument_selector].noteOn(19, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOn(19, 80, (page_select == edit_melody));
             break;
 
           default:
@@ -631,10 +632,10 @@ void loop() {
           case PRESET_ROOT_BEAT:
             for (int i = 0; i < MAX_BARS; i++)
             {
-              ins[instrument_selector].note_off[0][i] = ~(1<<frets[i]);
               for (int j = 0; j < MAX_BEATS; j++)
               {
                 ins[instrument_selector].note_on[j][i] = 1<<frets[i];
+                ins[instrument_selector].note_off[j][i] = 1<<frets[i];
               }
             }
             break;
@@ -656,10 +657,10 @@ void loop() {
               uint32_t root = 1<<frets[i];
               uint32_t third = i < 6 ? 1<<frets[i+2] : 1<<frets[i-5];
               uint32_t fifth = i < 4 ? 1<<frets[i+4] : 1<<frets[i-3];
-              ins[instrument_selector].note_off[0][i] = ~(root | third | fifth);
               for (int j = 0; j < MAX_BEATS; j++)
               {
                 ins[instrument_selector].note_on[j][i] = root | third | fifth;
+                ins[instrument_selector].note_off[j][i] = root | third | fifth;
               }
             }
             break;
@@ -670,9 +671,8 @@ void loop() {
               for (int j = 0; j < MAX_BEATS; j++)
               {
                 int note = 1<<frets[i + (j%3)*2];
-
                 ins[instrument_selector].note_on[j][i] = note;
-                ins[instrument_selector].note_off[j][i] = ~(note); // TODO: possible optimization here
+                ins[instrument_selector].note_off[j][i] = note;
               }
             }
             break;
@@ -684,7 +684,7 @@ void loop() {
               {
                 int note = random(NUM_NOTES);
                 ins[instrument_selector].note_on[j][i] = 1<<note;
-                ins[instrument_selector].note_off[j][i] = ~(1<<note); // TODO: possible optimization here
+                ins[instrument_selector].note_off[j][i] = 1<<note;
               }
             }
             break;
@@ -814,68 +814,67 @@ void loop() {
     {
       if (page_select == edit_melody || page_select == show_all)
       {
-        bool next_beat = play && (micros() >= (last_beat+(beat_len>>1)));
         switch (butt)
         {
           case NOTE_0:
-            ins[instrument_selector].noteOff(0, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(0, 80, (page_select == edit_melody));
             break;
           case NOTE_1:
-            ins[instrument_selector].noteOff(1, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(1, 80, (page_select == edit_melody));
             break;
           case NOTE_2:
-            ins[instrument_selector].noteOff(2, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(2, 80, (page_select == edit_melody));
             break;
           case NOTE_3:
-            ins[instrument_selector].noteOff(3, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(3, 80, (page_select == edit_melody));
             break;
           case NOTE_4:
-            ins[instrument_selector].noteOff(4, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(4, 80, (page_select == edit_melody));
             break;
           case NOTE_5:
-            ins[instrument_selector].noteOff(5, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(5, 80, (page_select == edit_melody));
             break;
           case NOTE_6:
-            ins[instrument_selector].noteOff(6, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(6, 80, (page_select == edit_melody));
             break;
           case NOTE_7:
-            ins[instrument_selector].noteOff(7, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(7, 80, (page_select == edit_melody));
             break;
           case NOTE_8:
-            ins[instrument_selector].noteOff(8, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(8, 80, (page_select == edit_melody));
             break;
           case NOTE_9:
-            ins[instrument_selector].noteOff(9, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(9, 80, (page_select == edit_melody));
             break;
           case NOTE_10:
-            ins[instrument_selector].noteOff(10, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(10, 80, (page_select == edit_melody));
             break;
           case NOTE_11:
-            ins[instrument_selector].noteOff(11, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(11, 80, (page_select == edit_melody));
             break;
           case NOTE_12:
-            ins[instrument_selector].noteOff(12, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(12, 80, (page_select == edit_melody));
             break;
           case NOTE_13:
-            ins[instrument_selector].noteOff(13, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(13, 80, (page_select == edit_melody));
             break;
           case NOTE_14:
-            ins[instrument_selector].noteOff(14, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(14, 80, (page_select == edit_melody));
             break;
           case NOTE_15:
-            ins[instrument_selector].noteOff(15, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(15, 80, (page_select == edit_melody));
             break;
           case NOTE_16:
-            ins[instrument_selector].noteOff(16, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(16, 80, (page_select == edit_melody));
             break;
           case NOTE_17:
-            ins[instrument_selector].noteOff(17, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(17, 80, (page_select == edit_melody));
             break;
           case NOTE_18:
-            ins[instrument_selector].noteOff(18, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(18, 80, (page_select == edit_melody));
             break;
           case NOTE_19:
-            ins[instrument_selector].noteOff(19, 80, &trellis, (page_select == edit_melody), next_beat);
+            ins[instrument_selector].noteOff(19, 80, (page_select == edit_melody));
             break;
 
           default:
@@ -920,5 +919,11 @@ void loop() {
   {
     beat_len = (micros()-clk_timer)*6;
     clk_timer = micros();
-  }  
+  }
+  
+  for (int i = 0; i < NUM_INS; i++)
+  {
+    trellis.setUSBMIDIchannel(i);
+    ins[i].playback();
+  }
 }
