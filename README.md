@@ -1,3 +1,6 @@
+
+# NB This readme is obsolete. New details coming soon
+
 # generative_sequencer_m4
 Midi sequencer using a neotrellis m4 with some randomization options to make generative music
 

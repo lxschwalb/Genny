@@ -59,7 +59,7 @@ int instruments::showNote(int note) {
 void instruments::setNoteTimes(unsigned long last_beat, unsigned long beat_len) {
   int bar_alias = bar_copy[_bar_num];
   int beat_alias = random_beat ? random(16) : _beat_num;
-  if (random(1, 5) <= prob)
+  if (random(1, 4) <= prob)
   {
     long variation = (beat_len>>4)*rand_time;
     for(int i = 0; i < 20; i++) {
@@ -162,10 +162,6 @@ void instruments::noteOff(int note, int velocity, bool write) {
   {
     note_off[_beat_num][bar_copy[_bar_num]] ^= 1<<note;
   }
-}
-
-int instruments::probColor() {
-  return count_colors1[prob];
 }
 
 int instruments::velModeColor() {
