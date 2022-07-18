@@ -12,22 +12,25 @@ Numbers are represented in 2 ways. The first is in binary format, where one colo
 
 The second is to associate a colour to a specific number. We generally want to count up to 8, so we start with white followed by the 7 colours of the rainbow. This is useful to count using only one button.
 
-## Tuning:
-TODO add picture
-
 ## Making Music:
 
 The 1st, 7th and 8th column permanently have the same function, while the rest of the buttons' functions vary depending on the selected page.
 
-The 1st column permanently represents the current beat number as a 4 bit binary number. Since it is a 4 bit binary number it counts from 0 to 15, instead of 1 to 16 (as would usually be done in music).
+|b3||||||i3|play|
+|-|-|-|-|-|-|-|-|
+|b2||||||i2|next beat|
+|b1||||||i1|next bar|
+|b0||||||i0|page|
 
-The 7th column permanently represents which midi channel is selected as a 4 bit binary number.
+The [b0, b3] buttons permanently represents the current beat number as a 4 bit binary number. Since it is a 4 bit binary number it counts from 0 to 15, instead of 1 to 16 (as would usually be done in music).
 
-The top right button permanently functions as the play/stop button. The colour represents the current state. Green means it is playing, red means it stopped.
+The [i0, i3] buttons permanently represents which midi channel is selected as a 4 bit binary number.
 
-In the 8th column, pressing the 2nd button causes an immediate jump to the next beat, while pressing the 3rd button causes an immediate jump to the next bar. The colour of these buttons represents the bar number.
+The [play] button permanently functions as the play/stop button. The colour represents the current state. Green means it is playing, red means it stopped.
 
-The bottom right button selects the page to display. The page number is represented by the colour and as the button is pressed a letter is displayed to indicate the current page. The function of each page is described below.
+Pressing the [next beat] button causes an immediate jump to the next beat, while pressing the [next bar] button causes an immediate jump to the next bar. The colour of these buttons represents the bar number.
+
+The [page] button selects the page to display. The page number is represented by the colour and as the button is pressed a letter is displayed to indicate the current page. The function of each page is described below.
 
 ### Show All (A):
 
@@ -35,13 +38,28 @@ In this page, all the melodies are simultaneously displayed. The colours of each
 
 One can also play an instrument by pressing the buttons. The channel that is being played is selected by the 7th column.
 
+If black keys are included for the current channel(default), the tuning is as follows. The lowest note is an A on the bottom left, and then it chromatically increases to the right. The next row up is a 4th higher, just like many string instruments (such as guitar).
+||C|C#|D|D#|E|||
+|-|-|-|-|-|-|-|-|
+||G|G#|A|A#|B|||
+||D|D#|E|F|F#|||
+||A|A#|B|C|C#|||
+
+
+If black keys are excluded from the current channel, the tuning is as follows. Again the lowest note is an A on the bottom left.
+||B|C|D|E|F|||
+|-|-|-|-|-|-|-|-|
+||D|E|F|G|A|||
+||F|G|A|B|C|||
+||A|B|C|D|E|||
+
 ### Edit Time (t):
 
 This page is used to edit various time parameters. TODO add details
 
 ### Record (R):
 
-This page is used to record melodies. Pressing a button puts a midi NoteOn command on the current beat, and releasing a button puts a midi NoteOff command on the current beat. You can either record a melody in realtime while the system is playing(top right button green),or you could manually input a melody by navigating to the time point(beat and bar) you want to edit and then pressing or releasing the button corresponding to the note you want.
+This page is used to record melodies. Pressing a button puts a midi NoteOn command on the current beat, and releasing a button puts a midi NoteOff command on the current beat. You can either record a melody in realtime while the system is playing(top right button green),or you could manually input a melody by navigating to the time point(beat and bar) you want to edit and then pressing or releasing the button corresponding to the note you want. The tuning is the same as described for the Show All section.
 
 ### Edit Bars (b):
 
@@ -68,7 +86,7 @@ The first note of each bar is played at the minimum velocity, and linearly incre
 **Descending (Red):**
 The first note of each bar is played at the maximum velocity, and linearly decreases so that the last note is played at the minimum velocity.
 
-The top button in the 5th column ssets whether black keys are included or nor. When they are included you can make more emotionally complex sounds, but when they are excluded you are guaranteed that every note is in CMaj/Amin.
+The top button in the 5th column ssets whether black keys are included or not. When they are included you can make more emotionally complex sounds, but when they are excluded you are guaranteed that every note is in CMaj/Amin.
 
 The 3 cyan buttons just below set the octave of the notes.
 
