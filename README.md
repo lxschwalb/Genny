@@ -1,6 +1,6 @@
 # Overview:
 
-Genny is a generative midi sequencer using a Neotrellis M4. Patterns of up to 8 bars, each containing up to 16 beats can be programmed for up to 16 midi channels. There are then some features to randomise the playback to create some generative music.
+Genny is a generative MIDI sequencer using a Neotrellis M4. Patterns of up to 8 bars, each containing up to 16 beats can be programmed for up to 16 midi channels. There are then some features to randomise the playback to create some generative music.
 
 # Uploading the firmware:
 
@@ -16,7 +16,7 @@ The second is to associate a colour to a specific number. We generally want to c
 
 # Making Music:
 
-The 1st, 7th and 8th column permanently have the same function, while the rest of the buttons' functions vary depending on the selected page.
+The 1st, 7th and 8th columns permanently have the same function, while the rest of the buttons' functions vary depending on the selected page.
 
 |beat3||||||instr3|play|
 |-|-|-|-|-|-|-|-|
@@ -48,7 +48,7 @@ If black keys are included for the current channel(default), the tuning is as fo
 ||A|A#|B|C|C#|||
 
 
-If black keys are excluded from the current channel, the tuning is as follows. Again the lowest note is an A on the bottom left.
+If black keys are excluded for the current channel, the tuning is as follows. Again the lowest note is an A on the bottom left.
 ||B|C|D|E|F|||
 |-|-|-|-|-|-|-|-|
 ||D|E|F|G|A|||
@@ -62,21 +62,21 @@ If black keys are excluded from the current channel, the tuning is as follows. A
 ||globalNumBeats1|globalTimeDeviance1|tap/3|localNumBeats1|localTimeDeviance1|||
 ||globalNumBeats0|globalTimeDeviance0|tap/4|localNumBeats0|localTimeDeviance0|||
 
-[globalNumBeats] sets the amount of beats per bar. [localNumBeats] sets the amount of beats for only the current instrument and is useful for creating polyrythms. If [runFree] is disabled and [localNumBeats] is less than [globalNumBeats], the current instrument repeats a pattern of length [localNumBeats] until the end of each bar. If [runFree] is enabled, the current instrument runs detatched from the rest of the system, and the length of its bars is determined by [localNumBeats].
+[globalNumBeats] sets the amount of beats per bar. [localNumBeats] sets the amount of beats for only the current instrument and is useful for creating polyrhythms. If [runFree] is disabled and [localNumBeats] is less than [globalNumBeats], the current instrument repeats a pattern of length [localNumBeats] until the end of each bar. If [runFree] is enabled, the current instrument runs detached from the rest of the system, and the length of its bars is determined by [localNumBeats].
 
 [clockMode] sets the midi clock mode in case you want to sync Genny with other midi devices. The colours indicate the mode as follows:
 - Red: No synchronization
 - Green: Genny is the master, so it determines the tempo
 - Yellow: Genny is the slave, so it listens to the tempo from another device
 
-With [globalTimeDeviance], you can make the time between beats deviate from perfect timing. With [localTimeDeviance], you can make the current instrument deviate from the beat. It is reccomended to add local deviance to any instrument that plays chords, because then the individual notes in the chord aren't played exactly simultaneously and this gives a much more natural sound.
+With [globalTimeDeviance], you can make the time between beats deviate from perfect timing. With [localTimeDeviance], you can make the current instrument deviate from the beat. It is recommended to add local deviance to any instrument that plays chords, because then the individual notes in the chord aren't played exactly simultaneously and this gives a much more natural sound.
 
 The tap buttons are for tap tempo. The beat length is determined by the time between pressing and releasing one of the buttons. With [tap/1] you directly tap the tempo. With [tap/2] the tempo is double what you tap. With [tap/3] the tempo is 3 times what you tap. With [tap/4] the tempo is 4 times what you tap. 
 
 
 ## Record (R):
 
-This page is used to record melodies. Pressing a button puts a midi NoteOn command on the current beat, and releasing a button puts a midi NoteOff command on the current beat. You can either record a melody in realtime while the system is playing,or you could manually input a melody by navigating to the time point(beat and bar) you want to edit and then pressing or releasing the button corresponding to the note you want. The tuning is the same as described for the Show All section.
+This page is used to record melodies. Pressing a button puts a midi NoteOn command on the current beat, and releasing a button puts a midi NoteOff command on the current beat. You can either record a melody in realtime while the system is playing,or you could manually input a melody by navigating to the time point(beat and bar) you want to edit and then pressing or releasing the button corresponding to the note you want. The tuning is the same as described for the _Show All_ section.
 
 ## Edit Bars (b):
 ||bar0|bar1|randomBar|groupRepeats1|instrange3|||
@@ -85,7 +85,7 @@ This page is used to record melodies. Pressing a button puts a midi NoteOn comma
 ||bar4|bar5|numBar1|groupSize1|instrange1|||
 ||bar6|bar7|numBar0|groupSize0|instrange0|||
 
-[bar] is used to set the bar repetition structure. The colour of each button sets which bar to play, and the location sets when to play it. For example, if every button is white, the current instrument would continuously play the firt bar. This is useful for having a repetitive drumbeat without having to manually program it for all 8 bars.
+[bar] is used to set the bar repetition structure. The colour of each button sets which bar to play, and the location sets when to play it. For example, if every button is white, the current instrument would continuously play the first bar. This is useful for having a repetitive drumbeat without having to manually program it for all 8 bars.
 
 Changing the colours in this _bar repetition structure_ section is kind of counter intuitive, but once you get it you can put in patterns very fast. First press and hold the button that represents the bar number you want to set the other buttons to. Then press all the buttons you want to set to that bar number while still holding down the first button.
 
@@ -102,7 +102,7 @@ TODO implement rest
 ||velMax1|velMin1|velParam1|octave1|randomNote|||
 ||velMax0|velMin0|velParam0|octave0|midiPanic|||
 
-[velMax] sets the maximum velocity and the [velMin] sets the minimum velocity. [velMode] sets how the velocity varries, and [velParam] adjusts different parameters depending the velocity mode. There are 5 modes:
+[velMax] sets the maximum velocity and the [velMin] sets the minimum velocity. [velMode] sets how the velocity varies, and [velParam] adjusts different parameters depending the velocity mode. There are 5 modes:
 
 - **Random uniform (blue):**
 Each note's velocity is sampled from a random uniform distribution between the minimum and maximum velocities.
@@ -123,9 +123,9 @@ The first note of each bar is played at the maximum velocity, and linearly decre
 
 [octave] sets the octave of the notes.
 
-[prob] sets the probability of a note being played. When both buttons are on each note plays 100% of the time, and when both are off it is 0% and the current channel is essentially switched off. It sounds cool to have it inbetween, so only some, but not all, notes play.
+[prob] sets the probability of a note being played. When both buttons are on each note plays 100% of the time, and when both are off it is 0% and the current channel is essentially switched off. It sounds cool to have it in-between, so only some, but not all, notes play.
 
-[randomNote] enables random note mode. If enabled, instead of playing the beats in sequence, a random beat within the bar is chosen every time. This allows generative melodies.
+If [randomNote] is enabled, instead of playing the beats in sequence, a random beat within the bar is chosen every time. This allows generative melodies.
 
 [midiPanic] sends the midi panic command. If a note is stuck, send this command to stop it.
 
@@ -133,7 +133,7 @@ The first note of each bar is played at the maximum velocity, and linearly decre
 ||root|roots|ascending|descending|copySource3|||
 |-|-|-|-|-|-|-|-|
 ||chord|chords|Co5|blues|copySource2|||
-||arpegios|randomNotes|pop|randomBars|copySource1|||
+||arpeggios|randomNotes|pop|randomBars|copySource1|||
 ||clearNotes|copyNotes|mono|copyBars|copySource0|||
 
 This page is used to quickly write presets to the current channel so you don't have to manually input it every time. The 2nd and 3rd columns are used to set the bar repetition structure, and the 4th and 5th columns are used to set the notes within the bars. Take note, most of these buttons will overwrite whatever is currently written into the selected instrument.
@@ -157,7 +157,7 @@ The note presets are as follows:
 - [roots] overwrites every beat with the root note of the corresponding bar.
 - [chord] overwrites the first beat of each bar with the chord corresponding to that bar.
 - [chords] overwrites every beat with the chord of the corresponding bar.
-- [arpegios] same as [chords], except the notes are arpegiated.
+- [arpeggios] same as [chords], except the notes are arpeggiated.
 - [randomNotes] places a random note on each beat.
 - [clearNotes] deletes all the notes in the current instrument.
 - [copyNotes] overwrites all the notes in the selected instrument(7th column) with the notes from the instrument indicated by [copySource] (6th column).
