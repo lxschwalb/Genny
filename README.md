@@ -56,13 +56,23 @@ If black keys are excluded from the current channel, the tuning is as follows. A
 ||A|B|C|D|E|||
 
 ## Edit Time (t):
-||globalNumBeats3|clockMode|tap3|localNumBeats3|runFree|||
+||globalNumBeats3|clockMode|tap/1|localNumBeats3|runFree|||
 |-|-|-|-|-|-|-|-|
-||globalNumBeats2|globalTimeDeviance2|tap2|localNumBeats2|localTimeDeviance2|||
-||globalNumBeats1|globalTimeDeviance1|tap1|localNumBeats1|localTimeDeviance1|||
-||globalNumBeats0|globalTimeDeviance0|tap0|localNumBeats0|localTimeDeviance0|||
+||globalNumBeats2|globalTimeDeviance2|tap/2|localNumBeats2|localTimeDeviance2|||
+||globalNumBeats1|globalTimeDeviance1|tap/3|localNumBeats1|localTimeDeviance1|||
+||globalNumBeats0|globalTimeDeviance0|tap/4|localNumBeats0|localTimeDeviance0|||
 
-This page is used to edit various time parameters. TODO add details
+[globalNumBeats] sets the amount of beats per bar. [localNumBeats] sets the amount of beats for only the current instrument and is useful for creating polyrythms. If [runFree] is disabled and [localNumBeats] is less than [globalNumBeats], the current instrument repeats a pattern of length [localNumBeats] until the end of each bar. If [runFree] is enabled, the current instrument runs detatched from the rest of the system, and the length of its bars is determined by [localNumBeats].
+
+[clockMode] sets the midi clock mode in case you want to sync Genny with other midi devices. The colours indicate the mode as follows:
+- Red: No synchronization
+- Green: Genny is the master, so it determines the tempo
+- Yellow: Genny is the slave, so it listens to the tempo from another device
+
+With [globalTimeDeviance], you can make the time between beats deviate from perfect timing. With [localTimeDeviance], you can make the current instrument deviate from the beat. It is reccomended to add local deviance to any instrument that plays chords, because then the individual notes in the chord aren't played exactly simultaneously and this gives a much more natural sound.
+
+The tap buttons are for tap tempo. The beat length is determined by the time between pressing and releasing one of the buttons. With [tap/1] you directly tap the tempo. With [tap/2] the tempo is double what you tap. With [tap/3] the tempo is 3 times what you tap. With [tap/4] the tempo is 4 times what you tap. 
+
 
 ## Record (R):
 
@@ -120,11 +130,11 @@ The first note of each bar is played at the maximum velocity, and linearly decre
 [midiPanic] sends the midi panic command. If a note is stuck, send this command to stop it.
 
 ## Presets (P):
-||ascending|descending|root|roots|copySource3|||
+||root|roots|ascending|descending|copySource3|||
 |-|-|-|-|-|-|-|-|
-||blues|pop|chord|chords|copySource2|||
-||Co5|randomBars|arpegios|randomNotes|copySource1|||
-||mono|copyBars|clearNotes|copyNotes|copySource0|||
+||chord|chords|Co5|blues|copySource2|||
+||arpegios|randomNotes|pop|randomBars|copySource1|||
+||clearNotes|copyNotes|mono|copyBars|copySource0|||
 
 This page is used to quickly write presets to the current channel so you don't have to manually input it every time. The 2nd and 3rd columns are used to set the bar repetition structure, and the 4th and 5th columns are used to set the notes within the bars. Take note, most of these buttons will overwrite whatever is currently written into the selected instrument.
 
@@ -136,9 +146,9 @@ It is assumed that the bars are associated with the following chords:
 The bar presets are as follows:
 - [ascending] puts the bars in the following order: 1, 2, 3, 4, 5, 6, 7, 8. This is the default order.
 - [descending] puts the bars in the following order: 8, 7, 6, 5, 4, 3, 2, 1.
+- [Co5] puts the bars in the following order: 1, 4, 7, 3, 6, 2, 5, 8. This follows the circle of 5ths, and is also the progression used in Autumn Leaves.
 - [blues] puts the bars in the following order: 1, 1, 4, 1, 5, 4, 1, 1. This is an 8 bar version of the 12 bar blues.
-- [pop] puts the bars in the following order: TODO. These 4 chords are often used in pop songs.
-- [Co5] puts the bars in the following order: TODO. This follows the circle of 5ths, and is also the progression used in Autumn Leaves.
+- [pop] puts the bars in the following order: 3, 7, 1, 6, 3, 7, 1, 6. These 4 chords are often used in pop songs.
 - [mono] puts the bars in the following order: 1, 1, 1, 1, 1, 1, 1, 1. This is useful for something such as a drum beat that repeats for every bar.
 - [copyBars] copies into the selected instrument(7th column) the bar repetition structure of the instrument indicated by [copySource] (6th column).
 
