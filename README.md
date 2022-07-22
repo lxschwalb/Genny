@@ -130,13 +130,13 @@ If [randomNote] is enabled, instead of playing the beats in sequence, a random b
 [midiPanic] sends the midi panic command. If a note is stuck, send this command to stop it.
 
 ## Presets (P):
-||root|roots|ascending|descending|copySource3|||
+||root|roots|copySource3|mono|minorBlues|||
 |-|-|-|-|-|-|-|-|
-||chord|chords|Co5|blues|copySource2|||
-||arpeggios|randomNotes|pop|randomBars|copySource1|||
-||clearNotes|copyNotes|mono|copyBars|copySource0|||
+||chord|chords|copySource3|pop|majorBlues|||
+||arpeggios|randomNotes|copySource3|randomBars|Co5|||
+||clearNotes|copyNotes|copySource3|copyBars|ascending|||
 
-This page is used to quickly write presets to the current channel so you don't have to manually input it every time. The 2nd and 3rd columns are used to set the bar repetition structure, and the 4th and 5th columns are used to set the notes within the bars. Take note, most of these buttons will overwrite whatever is currently written into the selected instrument.
+This page is used to quickly write presets to the current channel so you don't have to manually input it every time. The 5th and 6th columns are used to set the bar repetition structure, and the 2nd and 3rd columns are used to set the notes within the bars. Take note, most of these buttons will overwrite whatever is currently written into the selected instrument.
 
 It is assumed that the bars are associated with the following chords:
 |Bar 1|Bar 2|Bar 3|Bar 4|Bar 5|Bar 6|Bar 7|Bar 8|
@@ -144,13 +144,14 @@ It is assumed that the bars are associated with the following chords:
 |Am|B|C|Dm|Em|F|G|Am|
 
 The bar presets are as follows:
-- [ascending] puts the bars in the following order: 1, 2, 3, 4, 5, 6, 7, 8. This is the default order.
-- [descending] puts the bars in the following order: 8, 7, 6, 5, 4, 3, 2, 1.
-- [Co5] puts the bars in the following order: 1, 4, 7, 3, 6, 2, 5, 8. This follows the circle of 5ths, and is also the progression used in Autumn Leaves.
-- [blues] puts the bars in the following order: 1, 1, 4, 1, 5, 4, 1, 1. This is an 8 bar version of the 12 bar blues.
-- [pop] puts the bars in the following order: 3, 7, 1, 6, 3, 7, 1, 6. These 4 chords are often used in pop songs.
 - [mono] puts the bars in the following order: 1, 1, 1, 1, 1, 1, 1, 1. This is useful for something such as a drum beat that repeats for every bar.
+- [pop] puts the bars in the following order: 3, 7, 1, 6, 3, 7, 1, 6. These 4 chords are often used in pop songs.
+- [minorBlues] puts the bars in the following order: 1, 1, 4, 1, 5, 4, 1, 1. This is an 8 bar version of the 12 bar blues.
+- [majorBlues] puts the bars in the following order: 3, 3, 6, 3, 7, 6, 3, 3. This is the relative major of the minor blues.
+- [Co5] puts the bars in the following order: 1, 4, 7, 3, 6, 2, 5, 8. This follows the circle of 5ths, and is also the progression used in Autumn Leaves.
+- [randomBars] generates a random chord progression.
 - [copyBars] copies into the selected instrument(7th column) the bar repetition structure of the instrument indicated by [copySource] (6th column).
+- [ascending] puts the bars in the following order: 1, 2, 3, 4, 5, 6, 7, 8. This is the default order.
 
 The note presets are as follows:
 - [root] overwrites the first beat of each bar with just the root note corresponding to that bar.
