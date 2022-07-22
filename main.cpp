@@ -98,10 +98,10 @@
 #define PROB_1            5
 
 // Preset buttons
-#define INS_COPY_0        5
-#define INS_COPY_1        13
-#define INS_COPY_2        21
-#define INS_COPY_3        29
+#define INS_COPY_0        3
+#define INS_COPY_1        11
+#define INS_COPY_2        19
+#define INS_COPY_3        27
 #define PRESET_ROOT_BAR   1
 #define PRESET_ROOT_BEAT  2
 #define PRESET_CHORD_BAR  9
@@ -110,13 +110,13 @@
 #define PRESET_RAND       18
 #define PRESET_CLEAR      25
 #define PRESET_COPY       26
-#define BAR_PRESET_UP     3
-#define BAR_PRESET_DOWN   4
-#define BAR_PRESET_CO5    11
-#define BAR_PRESET_BLUES  12
-#define BAR_PRESET_POP    19
+#define BAR_PRESET_UP     29
+#define BAR_PRESET_BLUESM 5
+#define BAR_PRESET_CO5    21
+#define BAR_PRESET_BLUES  13
+#define BAR_PRESET_POP    12
 #define BAR_PRESET_RAND   20
-#define BAR_PRESET_MON    27
+#define BAR_PRESET_MON    4
 #define BAR_PRESET_COPY   28
 
 
@@ -146,8 +146,8 @@ Adafruit_NeoTrellisM4 trellis;
 bool letter[6][20] = {{0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0},
                       {0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0},
                       {0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0},
-                      {0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0},
                       {0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0},
+                      {0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0},
                       {0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0}};
 
 // Time stuff
@@ -312,22 +312,22 @@ void display() {
         {
           setPixelColor(ins_copy_buttons[i], conditionalColor(ins_copy & (8>>i), 0xFF008F));
         }
-        setPixelColor(PRESET_ROOT_BAR, 0xFF0000);
-        setPixelColor(PRESET_ROOT_BEAT, 0xFF0000);
-        setPixelColor(PRESET_CHORD_BAR, 0xFF0000);
-        setPixelColor(PRESET_CHORD_BEAT, 0xFF0000);
-        setPixelColor(PRESET_ARPEG, 0xFF0000);
-        setPixelColor(PRESET_RAND, 0xFF0000);
+        setPixelColor(PRESET_ROOT_BAR, 0x0000FF);
+        setPixelColor(PRESET_ROOT_BEAT, 0x4000FF);
+        setPixelColor(PRESET_CHORD_BAR, 0x0000FF);
+        setPixelColor(PRESET_CHORD_BEAT, 0x4000FF);
+        setPixelColor(PRESET_ARPEG, 0x00A00A);
+        setPixelColor(PRESET_RAND, 0xFFFF00);
         setPixelColor(PRESET_CLEAR, 0xFF0000);
-        setPixelColor(PRESET_COPY, 0xFF0000);
+        setPixelColor(PRESET_COPY, 0xFF00FF);
         setPixelColor(BAR_PRESET_UP, 0xFF0000);
-        setPixelColor(BAR_PRESET_DOWN, 0xFF0000);
-        setPixelColor(BAR_PRESET_CO5, 0xFF0000);
-        setPixelColor(BAR_PRESET_BLUES, 0xFF0000);
-        setPixelColor(BAR_PRESET_POP, 0xFF0000);
-        setPixelColor(BAR_PRESET_RAND, 0xFF0000);
-        setPixelColor(BAR_PRESET_MON, 0xFF0000);
-        setPixelColor(BAR_PRESET_COPY, 0xFF0000);
+        setPixelColor(BAR_PRESET_BLUESM, 0x0000FF);
+        setPixelColor(BAR_PRESET_CO5, 0x00A00A);
+        setPixelColor(BAR_PRESET_BLUES, 0x0000FF);
+        setPixelColor(BAR_PRESET_POP, 0x4000FF);
+        setPixelColor(BAR_PRESET_RAND, 0xFFFF00);
+        setPixelColor(BAR_PRESET_MON, 0xBABABA);
+        setPixelColor(BAR_PRESET_COPY, 0xFF00FF);
         break;
 
       case edit_bars: // EDIT BARS
@@ -798,11 +798,15 @@ void loop() {
                 ins[instrument_selector].bar_copy[i] = i;
               }
               break;
-            case BAR_PRESET_DOWN:
-              for (int i = 0; i < MAX_BARS; i++)
-              {
-                ins[instrument_selector].bar_copy[i] = MAX_BARS - 1 - i;
-              }
+            case BAR_PRESET_BLUESM:
+              ins[instrument_selector].bar_copy[0] = 0;
+              ins[instrument_selector].bar_copy[1] = 0;
+              ins[instrument_selector].bar_copy[2] = 3;
+              ins[instrument_selector].bar_copy[3] = 0;
+              ins[instrument_selector].bar_copy[4] = 4;
+              ins[instrument_selector].bar_copy[5] = 3;
+              ins[instrument_selector].bar_copy[6] = 0;
+              ins[instrument_selector].bar_copy[7] = 0;
               break;
             case BAR_PRESET_CO5:
               ins[instrument_selector].bar_copy[0] = 0;
@@ -815,14 +819,14 @@ void loop() {
               ins[instrument_selector].bar_copy[7] = 7;
               break;
             case BAR_PRESET_BLUES:
-              ins[instrument_selector].bar_copy[0] = 0;
-              ins[instrument_selector].bar_copy[1] = 0;
-              ins[instrument_selector].bar_copy[2] = 3;
-              ins[instrument_selector].bar_copy[3] = 0;
-              ins[instrument_selector].bar_copy[4] = 4;
-              ins[instrument_selector].bar_copy[5] = 3;
-              ins[instrument_selector].bar_copy[6] = 0;
-              ins[instrument_selector].bar_copy[7] = 0;
+              ins[instrument_selector].bar_copy[0] = 2;
+              ins[instrument_selector].bar_copy[1] = 2;
+              ins[instrument_selector].bar_copy[2] = 5;
+              ins[instrument_selector].bar_copy[3] = 2;
+              ins[instrument_selector].bar_copy[4] = 6;
+              ins[instrument_selector].bar_copy[5] = 5;
+              ins[instrument_selector].bar_copy[6] = 2;
+              ins[instrument_selector].bar_copy[7] = 2;
               break;
             case BAR_PRESET_POP:
               ins[instrument_selector].bar_copy[0] = 2;
