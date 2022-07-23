@@ -79,11 +79,11 @@ The tap buttons are for tap tempo. The beat length is determined by the time bet
 This page is used to record melodies. Pressing a button puts a midi NoteOn command on the current beat, and releasing a button puts a midi NoteOff command on the current beat. You can either record a melody in realtime while the system is playing,or you could manually input a melody by navigating to the time point(beat and bar) you want to edit and then pressing or releasing the button corresponding to the note you want. The tuning is the same as described for the _Show All_ section.
 
 ## Edit Bars (b):
-||bar0|bar1|randomBar|groupRepeats1|instrange3|||
+||bar0|bar1|randomBar|applyToAll|exclude|||
 |-|-|-|-|-|-|-|-|
-||bar2|bar3|numBar2|groupRepeats0|instrange2|||
-||bar4|bar5|numBar1|groupSize1|instrange1|||
-||bar6|bar7|numBar0|groupSize0|instrange0|||
+||bar2|bar3|numBar2|groupSize2|groupRepeats2|||
+||bar4|bar5|numBar1|groupSize1|groupRepeats1|||
+||bar6|bar7|numBar0|groupSize0|groupRepeats0|||
 
 [bar] is used to set the bar repetition structure. The colour of each button sets which bar to play, and the location sets when to play it. For example, if every button is white, the current instrument would continuously play the first bar. This is useful for having a repetitive drumbeat without having to manually program it for all 8 bars.
 
