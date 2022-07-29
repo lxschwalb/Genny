@@ -103,11 +103,11 @@ If you want each bar to play multiple times before moving on to the next bar, yo
 If [applyToAll] is on, then whatever changes you make to the bar progression is also applied on all the other channels, except those for which [lock] is engaged.
 
 ## Other (O)
-||velMax3|velMin3|velMode|blackKeys|prob1|||
+||velMin3|velMax3|velMode|blackKeys|prob1|||
 |-|-|-|-|-|-|-|-|
-||velMax2|velMin2|velParam2|octave2|prob0|||
-||velMax1|velMin1|velParam1|octave1|randomNote|||
-||velMax0|velMin0|velParam0|octave0|midiPanic|||
+||velMin2|velMax2|velParam2|octave2|prob0|||
+||velMin1|velMax1|velParam1|octave1|randomNote|||
+||velMin0|velMax0|velParam0|octave0|midiPanic|||
 
 [velMax] sets the maximum velocity and the [velMin] sets the minimum velocity. [velMode] sets how the velocity varies, and [velParam] adjusts different parameters depending the velocity mode. There are 5 modes:
 
@@ -140,8 +140,8 @@ If [randomNote] is enabled, instead of playing the beats in sequence, a random b
 ||root|roots|copySource3|mono|minorBlues|||
 |-|-|-|-|-|-|-|-|
 ||chord|chords|copySource3|pop|majorBlues|||
-||arpeggios|randomNotes|copySource3|randomBars|Co5|||
-||clearNotes|copyNotes|copySource3|copyBars|ascending|||
+||arpeggios|copyNotes|copySource3|copyBars|Co5|||
+||clearNotes|randomNotes|copySource3|randomBars|ascending|||
 
 This page is used to quickly write presets to the current channel so you don't have to manually input it every time. The 5th and 6th columns are used to set the bar repetition structure, and the 2nd and 3rd columns are used to set the notes within the bars. Take note, most of these buttons will overwrite whatever is currently written into the selected instrument.
 
