@@ -6,7 +6,7 @@
 
 const int tonal_map[20] = {0, 2, 3, 5, 7, 8, 10, 12, 14, 15, 17, 19, 20, 22, 24, 26, 27, 29, 31, 32};
 const bool white_notes[20] = {1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1};
-const int count_colors2[6] = {0x0000FF, 0x00FFFF, 0x00FF00, 0xFFFF00, 0xFF0000, 0xFF00FF};
+const int count_colors2[6] = {0x0000FF, 0x008F8F, 0x00FF00, 0x8F8F00, 0xFF0000, 0x8F008F};
 
 enum velocity_mode {
   rand_uni = 0,
@@ -62,9 +62,7 @@ public:
     bool black_keys = true;
     velocity_mode vel_mode = rand_uni;
     uint8_t vel_param = 7;
+    bool lock_bars = false;
 };
-
-
-
 
 #endif
