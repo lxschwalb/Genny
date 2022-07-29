@@ -4,15 +4,17 @@ Genny is a generative MIDI sequencer using a Neotrellis M4. Patterns of up to 8 
 
 # Uploading the firmware:
 
-There are many different ways to upload the firmware. One option is to create a PlatformIO project in VS Code, copy the .cpp and .h files into the src folder. Press the upload button from PlatformIO.
+There are many different ways to upload the firmware. I will explain doing it with Arduino or VS Code.
 
-Another option is to create an Arduino project, copy the .cpp and .h files into the project folder, rename main.cpp to the name of the project, and change the file type from .cpp to .ino. Press the Arduino upload button.
+Arduino: Create a project called Genny and copy the .cpp and .h files into the project folder. Rename main.cpp to Genny.ino (replacing the file that already exists). Press the upload button within the Arduino IDE.
+
+VS Code: Get the Platform IO extension. Create a project for the neotrellis m4 board and copy the .cpp and .h files into the src folder. Press the upload button within the IDE.
 
 # Representing numbers:
 
-Numbers are represented in 2 ways. The first is in binary format, where one colour represents a 1 and another represents a 0. Multiple buttons are grouped together to represent the whole number.
+Numbers are represented in binary format. When the button is on, it represents a 1 and when it is off it represents a 0. Multiple buttons are grouped together to represent the whole number, and to show this grouping the buttons are the same colour when turned on.
 
-The second is to associate a colour to a specific number. We generally want to count up to 8, so we start with white followed by the 7 colours of the rainbow. This is useful to count using only one button.
+Of course if all the buttons are turned off, it represents a 0. However, for some parameters it does not make sense to have a 0, so instead Genny is adding 1 to the number. So instead of counting from $0$ to $2^{n-1}$, it counts from $1$ to $2^n$.
 
 # Making Music:
 
@@ -47,7 +49,6 @@ If black keys are included for the current channel(default), the tuning is as fo
 ||D|D#|E|F|F#|||
 ||A|A#|B|C|C#|||
 
-
 If black keys are excluded for the current channel, the tuning is as follows. Again the lowest note is an A on the bottom left.
 ||B|C|D|E|F|||
 |-|-|-|-|-|-|-|-|
@@ -73,27 +74,33 @@ With [globalTimeDeviance], you can make the time between beats deviate from perf
 
 The tap buttons are for tap tempo. The beat length is determined by the time between pressing and releasing one of the buttons. With [tap/1] you directly tap the tempo. With [tap/2] the tempo is double what you tap. With [tap/3] the tempo is 3 times what you tap. With [tap/4] the tempo is 4 times what you tap. 
 
-
 ## Record (R):
 
 This page is used to record melodies. Pressing a button puts a midi NoteOn command on the current beat, and releasing a button puts a midi NoteOff command on the current beat. You can either record a melody in realtime while the system is playing,or you could manually input a melody by navigating to the time point(beat and bar) you want to edit and then pressing or releasing the button corresponding to the note you want. The tuning is the same as described for the _Show All_ section.
 
 ## Edit Bars (b):
-||bar0|bar1|randomBar|applyToAll|exclude|||
+||randomBar|applyToAll|lock|bar0|bar1|||
 |-|-|-|-|-|-|-|-|
-||bar2|bar3|numBar2|groupSize2|groupRepeats2|||
-||bar4|bar5|numBar1|groupSize1|groupRepeats1|||
-||bar6|bar7|numBar0|groupSize0|groupRepeats0|||
+||numBar2|groupSize2|repeats2|bar2|bar3|||
+||numBar1|groupSize1|repeats1|bar4|bar5|||
+||numBar0|groupSize0|repeats0|bar6|bar7|||
 
-[bar] is used to set the bar repetition structure. The colour of each button sets which bar to play, and the location sets when to play it. For example, if every button is white, the current instrument would continuously play the first bar. This is useful for having a repetitive drumbeat without having to manually program it for all 8 bars.
+[bar] is used to set the bar repetition structure. The colour of each button sets which bar to play, and the location sets when to play it. For example, if every button is red, the current instrument would continuously play the first bar. This is useful for having a repetitive drumbeat without having to manually program it for all 8 bars.
 
-Changing the colours in this _bar repetition structure_ section is kind of counter intuitive, but once you get it you can put in patterns very fast. First press and hold the button that represents the bar number you want to set the other buttons to. Then press all the buttons you want to set to that bar number while still holding down the first button.
+The bars are represented by the colours in the table below. Note that on some screens some colours might not be visually seperable, but on Genny they are. It starts with red, then fades through shades of orange,yellow and ends on green.
+|Bar 1|Bar 2|Bar 3|Bar 4|Bar 5|Bar 6|Bar 7|Bar 8|
+|-|-|-|-|-|-|-|-|
+|![](https://via.placeholder.com/15/ff0000/ff0000.png)|![](https://via.placeholder.com/15/ff2000/ff2000.png)|![](https://via.placeholder.com/15/ff4800/ff4800.png)|![](https://via.placeholder.com/15/ff8500/ff8500.png)|![](https://via.placeholder.com/15/ffaf00/ffaf00.png)|![](https://via.placeholder.com/15/afff00/afff00.png)|![](https://via.placeholder.com/15/60ff00/60ff00.png)|![](https://via.placeholder.com/15/00ff00/00ff00.png)|
 
-If [randomBar] is enabled, a new bar is selected at random at the end of each bar.
+Changing the progression of bars is kind of counter intuitive, but once you get it you can put in patterns very fast. First press and hold the button that represents the bar number you want to set the other buttons to. Then press all the buttons you want to set to that bar number while still holding down the first button.
 
-You can change the number of bars with [numBar]. The default is 8, which is the maximum.
+If [randomBar] is enabled, a new bar is selected at random at the end of each bar or group of bars.
 
-TODO implement rest
+You can change the total number of bars with [numBar]. The default is 8, which is the maximum.
+
+If you want each bar to play multiple times before moving on to the next bar, you can set the number of repeats with [repeats]. You can group multiple bars together with [groupSize] to have, for example, 4 bars repeating 3 times before moving on to the next 4 bars. If [numBar] is not divisible by [groupSize], you can get long complicated progressions.
+
+If [applyToAll] is on, then whatever changes you make to the bar progression is also applied on all the other channels, except those for which [lock] is engaged.
 
 ## Other (O)
 ||velMax3|velMin3|velMode|blackKeys|prob1|||
