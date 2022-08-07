@@ -6,7 +6,7 @@ Genny is a generative MIDI sequencer using a Neotrellis M4. Patterns of up to 8 
 
 There are many different ways to upload the firmware. I will explain doing it with Arduino or VS Code.
 
-Arduino: Create a project called Genny and copy the .cpp and .h files into the project folder. Rename main.cpp to Genny.ino (replacing the file that already exists). Press the upload button within the Arduino IDE.
+Arduino: Create a project called Genny and copy the .cpp and .h files into the project folder. Rename main.cpp to Genny.ino (replacing the file that already exists). Use the _Board Manager_ to add _Adafruit SAMD Boards_ and the _Library Manager_ to add the _Adafruit NeoTrellis M4_ library. Press the upload button within the Arduino IDE.
 
 VS Code: Get the Platform IO extension. Create a project for the neotrellis m4 board and copy the .cpp and .h files into the src folder. Press the upload button within the IDE.
 
