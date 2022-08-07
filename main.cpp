@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <Adafruit_NeoTrellisM4.h>
-#include <instruments.h>
+#include "instruments.h"
 
 // Permanent buttons
 #define BEAT_NUM_0        0
