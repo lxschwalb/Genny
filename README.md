@@ -8,7 +8,11 @@ There are many different ways to upload the firmware. I will explain doing it wi
 
 Arduino: Create a project called Genny and copy the .cpp and .h files into the project folder. Rename main.cpp to Genny.ino (replacing the file that already exists). Use the _Board Manager_ to add _Adafruit SAMD Boards_ and the _Library Manager_ to add the _Adafruit NeoTrellis M4_ library. Press the upload button within the Arduino IDE.
 
-VS Code: Get the Platform IO extension. Create a project for the neotrellis m4 board and copy the .cpp and .h files into the src folder. Press the upload button within the IDE.
+VS Code: Get the Platform IO extension. Create a project for the neotrellis m4 board and copy the .cpp and .h files into the src folder. Copy the code below into the platformio.ini file. Press the upload button within the IDE.
+
+    lib_deps =
+        adafruit/Adafruit NeoTrellis M4 Library@^1.3.3
+        adafruit/Adafruit TinyUSB Library@^1.3.2
 
 # Representing numbers:
 
